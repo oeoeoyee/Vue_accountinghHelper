@@ -1,0 +1,41 @@
+input, select{
+    height: 40px;
+    border: 1px solid black;
+  }
+  
+  .payment_btn{
+    display: inline-block;
+    border: 1px solid black;
+  }
+  
+  /* input[type="radio"]{
+    display: none;
+  } */
+  
+  .sbtn{
+    height: 20px;
+    display: block;
+  }
+  
+  .pink_btn{
+    background-color: pink;
+  }
+  
+  .green_btn{
+    background-color: lightgreen;
+  }
+
+  .resetBtn{
+    margin: 5px;
+    background-color: gainsboro;
+    border: none;
+    border-radius: 3px;
+    height: 30px;
+    text-align: center;
+  }
+
+  th, td{
+    width: 150px;
+    text-align: center;
+    border: 1px solid #ccc;
+  }

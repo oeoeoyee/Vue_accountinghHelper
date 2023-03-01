@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="index.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.10/vue.min.js"></script>
+    <title>Document</title>
+</head>
+<body>
+    <div id='app3'>
+    <todo-list></todo-list>
+    </div>
+    
+    <!-- <div>
+    <label for="online" class="sbtn pink_btn">線上<input type="radio" name="payment" id="online" value="線上"></label>
+    <label for="cash" class="sbtn green_btn">現金<input type="radio" name="payment" id="cash" value="線上"></label>
+    </div> -->
+    
+    <!-- <table>
+    <thead>
+        <tr>
+        <th>日期</th>
+        <th>支出種類</th>
+        <th>花費</th>
+        <th>備註</th>
+        <th>付款方式</th>
+        </td>
+    </thead>
+    <tr>
+        <td>111</td>
+        <td>222</td>
+        <td>333</td>
+        <td>444</td>
+        <td>555</td>
+    </tr>
+    </table> -->
+
+</body>
+
+<script>
+    // 透過 prototype 添加的 $bus 屬性是可以在不同的 Vue 實例中共享的
+    Vue.prototype.$bus = new Vue();
+    Vue.component('todo-list',{
+        data(){
+            return{
+                // todos:['a','b','c']
+                todos:[
+                    // {
+                    //     date:'2023-01-11',
+                    //     kind:'kindTest',
+                    //     spend:'spendTest',
+                    //     memo:'memoTest',
+                    //     payment: 'cashORonline'
+                    // },
+                    // {
+                    //     date:'2023-01-05',
+                    //     kind:'kindTest',
+                    //     spend:'spendTest',
+                    //     memo:'memoTest',
+                    //     payment: 'cashORonline'
+                    // }
+                ]
+            };
+        },
+        methods:{
+            addTodo(submitData){
+                console.log(submitData);
+                this.todos.push(submitData);
+                // console.log(this);
+                // console.log(this.todos);
+                // console.log(this.todos[1]);
+                // console.log(this.todos[1].date);
+            },
+            resetDate(){
+                // 用sort來排列日期(回傳負數的話，前面的數在前面，回傳正整數的話，後面的數在前面)
+                this.todos.sort(function(a, b) {
+                    return b.date < a.date ? 1 : -1
+                })
+                // 如果之後是從資料庫取資料，那要再加一欄是它的index_key，要改的會是indexkey的排序，叫資料時再對indexkey來放資料(?)
+            },
+            itemDel(index_key){
+                // 接收從下面(todo-item)傳過來的要刪除的index_key
+                console.log('success!',index_key)
+                let delConfirm = confirm('是否刪除此項?');
+                if(delConfirm){
+                    // splice(要刪除的項次, 刪除的個數)
+                    for(let i=0; i<this.todos.length; i++){
+                        if(this.todos[i].index_key === index_key){
+                            this.todos.splice(i, 1)
+                        }
+                    }
+                }else{}
+            }
+
+        },
+        template:`
+            <div>
+                <todo-input @input='addTodo'></todo-input>
+                <table>
+                    <thead>
+                    <tr>
+                        <th>日期<button @click="resetDate" class="resetBtn">排序</button></th>
+                        <th>支出種類</th>
+                        <th>花費</th>
+                        <th>備註</th>
+                        <th>付款方式</th>
+                        <th>編輯</th>
+                    </td>
+                    </thead>
+                    <tbody>
+                    <todo-item v-for='todo in todos' :label='todo' @delItem="itemDel"></todo-item>
+                    </tbody>
+                </table>
+            </div>      
+        `
+        // :label是用label綁定todo，在之後的組件中要取用todo內容時就寫label....
+    });
+
+    Vue.component('todo-input',{
+        data(){
+            return{
+                date:'',
+                kind:'',
+                spend:'',
+                memo:'',
+                payment:''
+            }
+        },
+        methods:{
+            submit(){
+                // $emit()是一個方法。為向外層傳遞事件或參數
+                this.$emit('input',{
+                    date: this.date, 
+                    kind: this.kind, 
+                    spend: this.spend, 
+                    memo: this.memo,
+                    payment: this.payment,
+                    index_key:  new Date().getTime()
+                });
+                // this.$emit('input', this.date, this.kind, this.spend, this.memo);
+                this.date = '';
+                this.kind = '';
+                this.spend = '';
+                this.memo = '';
+                this.payment = '';
+            },
+            // 要怎麼放到剛開始的input?    
+            today(){
+                let year  = newdate.getFullYear();
+                let month = newdate.getMonth() + 1 < 10? "0" + (newdate.getMonth() + 1): newdate.getMonth() + 1;
+                let date  = newdate.getDate() < 10? "0" + newdate.getDate(): newdate.getDate();
+                
+                let nowDay = year + "年" + month + "月" + date +"日";
+            }
+        },
+        template:`
+            <form @submit.prevent='submit'>
+            <input type='date' v-model='date'/>
+            <select v-model='kind'>
+                <option value="日常飲食">日常飲食</option>
+                <option value="電信費">電信費</option>
+                <option value="交通費">交通費</option>
+                <option value="學習">學習</option>
+                <option value="假日(聚餐、出遊)">假日(聚餐、出遊)</option>
+                <option value="治裝水水">治裝水水</option>
+                <option value="其他(喜好)">其他(喜好)</option>
+            </select>
+            <input type='text' placeholder='150' v-model='spend'/>
+            <input type='text' placeholder='輸入備註' v-model='memo'/>
+            <div class="payment_btn">
+                <label for="online" class="sbtn pink_btn">線上<input type="radio" name="payment" id="online" value="線上" v-model='payment'></label>
+                <label for="cash" class="sbtn green_btn">現金<input type="radio" name="payment" id="cash" value="現金" v-model='payment'></label>
+            </div>
+            <button type='submit'>送出</button>
+            </form>
+        `
+    });
+    Vue.component('todo-item',{
+        props:['label'],
+        methods:{
+            resetDate(){
+                // 用sort來排列日期(回傳負數的話，前面的數在前面，回傳正整數的話，後面的數在前面)
+                this.todos.sort(function(a, b) {
+                    return b.date < a.date ? 1 : -1
+                })
+                // 如果之後是從資料庫取資料，那要再加一欄是它的index_key，要改的會是indexkey的排序，叫資料時再對indexkey來放資料(?)
+            },
+            del_item(){
+                // 用emit傳index_key到父層，刪除時才有依據
+                this.$emit('delItem', this.label.index_key)
+            }
+        },
+        template:`
+        <tr>
+            <td>{{label.date}}</td>
+            <td>{{label.kind}}</td>
+            <td>{{label.spend}}</td>
+            <td>{{label.memo}}</td>
+            <td>{{label.payment}}</td>
+            <td><button @click="$emit('edit-item')">修改</button><button @click="del_item">刪除</button></td>
+        </tr>
+        `
+        // 20230301 應該要觸發修改或刪除按鈕之後，去更動todos的資料，顯示在畫面上的就會改變了?
+    })
+    new Vue({
+        el:'#app3',
+    })
+</script>
+
+</html>
