@@ -39,3 +39,37 @@ input, select{
     text-align: center;
     border: 1px solid #ccc;
   }
+
+  /* 以下為有被綁定的class */
+  .active{
+    display: none;
+  }
+  
+  /* .important{
+    border: #ccc 1px solid;
+  } */
+
+  .gray{
+    border: #ccc 1px solid;
+  }
+
+  .black{
+    border: black 1px solid;
+  }
+  
+  /* 以上為有被綁定的class */
+
+  .inputstyle{
+    width: 90%;
+    height: 20px;
+    text-align: center;
+    margin: 5px;
+    border-radius: 3px;
+    border: #ccc 1px solid;
+  }
+
+  .king_icon{
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+  }

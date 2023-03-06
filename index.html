@@ -61,12 +61,24 @@
                     //     memo:'memoTest',
                     //     payment: 'cashORonline'
                     // }
-                ]
+                ],
+                // 應在父層就定義，因為之後會改值，指定義在子層的話會改不到
+                todosEdit:[
+                    {
+                        date:'',
+                        kind:'',
+                        spend:'',
+                        memo:'',
+                        payment: '',
+                        index_key:''
+                    },
+                ],
             };
         },
         methods:{
             addTodo(submitData){
                 console.log(submitData);
+                console.log(this.todosEdit[0].index_key);
                 this.todos.push(submitData);
                 // console.log(this);
                 // console.log(this.todos);
@@ -92,6 +104,23 @@
                         }
                     }
                 }else{}
+            },
+            editItem(todosEdit){
+                for(let i=0; i<this.todos.length; i++){
+                    if(this.todos[i].index_key === todosEdit.index_key){
+                        Object.assign(this.todos[i],todosEdit)
+                    }
+                }
+                this.todosEdit= [
+                    {
+                        date:'',
+                        kind:'',
+                        spend:'',
+                        memo:'',
+                        payment: '',
+                        index_key:''
+                    },
+                ]
             }
 
         },
@@ -107,10 +136,11 @@
                         <th>備註</th>
                         <th>付款方式</th>
                         <th>編輯</th>
+                        <th>重要</th>
                     </td>
                     </thead>
                     <tbody>
-                    <todo-item v-for='todo in todos' :label='todo' @delItem="itemDel"></todo-item>
+                    <todo-item v-for='todo in todos' :label='todo' :todos-edit='todosEdit' @delItem="itemDel" @edit_a_item="editItem"></todo-item>
                     </tbody>
                 </table>
             </div>      
@@ -177,32 +207,55 @@
             </form>
         `
     });
+
     Vue.component('todo-item',{
-        props:['label'],
+        // props:['label','todosEdit'],
+        // 用上方的寫法也是可以的，但用下面的props寫法，裡面的值會被比較清楚的定義 https://ithelp.ithome.com.tw/articles/10270207
+        props:{
+            label: Array,
+            todosEdit: Array
+        },
+        data(){
+            return{
+                isEdit: false,
+                isConfirm: true,
+                isImportant: "gray",
+            }
+        },
         methods:{
-            resetDate(){
-                // 用sort來排列日期(回傳負數的話，前面的數在前面，回傳正整數的話，後面的數在前面)
-                this.todos.sort(function(a, b) {
-                    return b.date < a.date ? 1 : -1
-                })
-                // 如果之後是從資料庫取資料，那要再加一欄是它的index_key，要改的會是indexkey的排序，叫資料時再對indexkey來放資料(?)
-            },
             del_item(){
                 // 用emit傳index_key到父層，刪除時才有依據
                 this.$emit('delItem', this.label.index_key)
-            }
+            },
+            edit_b_item(){
+                this.isEdit = !this.isEdit
+                this.isConfirm = !this.isConfirm
+                // 用 Object.assign(賦值對象,賦值來源) 來複製陣列
+                Object.assign(this.todosEdit[0],this.label)
+            },
+            edit_a_item(){
+                this.isConfirm = !this.isConfirm
+                this.isEdit = !this.isEdit
+                // 將改好的todosEdit整個丟回父層
+                this.$emit('edit_a_item', this.todosEdit[0])
+            },
+            important(){
+                this.isImportant = this.isImportant === 'gray' ? 'black' : 'gray';
+            },
         },
         template:`
         <tr>
-            <td>{{label.date}}</td>
-            <td>{{label.kind}}</td>
-            <td>{{label.spend}}</td>
-            <td>{{label.memo}}</td>
-            <td>{{label.payment}}</td>
-            <td><button @click="$emit('edit-item')">修改</button><button @click="del_item">刪除</button></td>
+            <td><span :class="{active:isEdit}">{{label.date}}</span><input type="text" v-model="todosEdit[0].date" :class="{active:isConfirm}" class="inputstyle"></td>
+            <td><span :class="{active:isEdit}">{{label.kind}}</span><input type="text" v-model="todosEdit[0].kind" :class="{active:isConfirm}" class="inputstyle"></td>
+            <td><span :class="{active:isEdit}">{{label.spend}}</span><input type="text" v-model="todosEdit[0].spend" :class="{active:isConfirm}" class="inputstyle"></td>
+            <td><span :class="{active:isEdit}">{{label.memo}}</span><input type="text" v-model="todosEdit[0].memo" :class="{active:isConfirm}" class="inputstyle"></td>
+            <td><span :class="{active:isEdit}">{{label.payment}}</span><input type="text" v-model="todosEdit[0].payment" :class="{active:isConfirm}" class="inputstyle"></td>
+            <td><button @click="edit_b_item" :class="{active:isEdit}">修改</button><button @click="edit_a_item" :class="{active:isConfirm}">確認</button><button @click="del_item">刪除</button></td>
+            <td><span @click="important" class="king_icon" :class="isImportant">ICON</span></td>
         </tr>
         `
         // 20230301 應該要觸發修改或刪除按鈕之後，去更動todos的資料，顯示在畫面上的就會改變了?
+        // 20230302 編輯功能可以參考 https://gretema.github.io/Vuejs/20191218/266480435/
     })
     new Vue({
         el:'#app3',
