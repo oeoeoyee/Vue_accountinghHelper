@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css" integrity="sha512-SzlrxWUlpfuzQ+pcUCosxcglQRNAq/DZjVsC0lE40xsADsfeQoEypE+enwcOiGjk/bSuGGKHEyjSoQ1zVisanQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.10/vue.min.js"></script>
     <title>Document</title>
 </head>
@@ -12,30 +13,6 @@
     <div id='app3'>
     <todo-list></todo-list>
     </div>
-    
-    <!-- <div>
-    <label for="online" class="sbtn pink_btn">線上<input type="radio" name="payment" id="online" value="線上"></label>
-    <label for="cash" class="sbtn green_btn">現金<input type="radio" name="payment" id="cash" value="線上"></label>
-    </div> -->
-    
-    <!-- <table>
-    <thead>
-        <tr>
-        <th>日期</th>
-        <th>支出種類</th>
-        <th>花費</th>
-        <th>備註</th>
-        <th>付款方式</th>
-        </td>
-    </thead>
-    <tr>
-        <td>111</td>
-        <td>222</td>
-        <td>333</td>
-        <td>444</td>
-        <td>555</td>
-    </tr>
-    </table> -->
 
 </body>
 
@@ -127,22 +104,25 @@
         template:`
             <div>
                 <todo-input @input='addTodo'></todo-input>
-                <table>
-                    <thead>
-                    <tr>
-                        <th>日期<button @click="resetDate" class="resetBtn">排序</button></th>
-                        <th>支出種類</th>
-                        <th>花費</th>
-                        <th>備註</th>
-                        <th>付款方式</th>
-                        <th>編輯</th>
-                        <th>重要</th>
-                    </td>
-                    </thead>
-                    <tbody>
-                    <todo-item v-for='todo in todos' :label='todo' :todos-edit='todosEdit' @delItem="itemDel" @edit_a_item="editItem"></todo-item>
-                    </tbody>
-                </table>
+                <div class="main">
+                    <kind-label></kind-label>
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>日期<button @click="resetDate" class="resetBtn">排序</button></th>
+                            <th>支出種類</th>
+                            <th>花費</th>
+                            <th>備註</th>
+                            <th>付款方式</th>
+                            <th>編輯</th>
+                            <th>重要</th>
+                        </td>
+                        </thead>
+                        <tbody>
+                        <todo-item v-for='todo in todos' :label='todo' :todos-edit='todosEdit' @delItem="itemDel" @edit_a_item="editItem"></todo-item>
+                        </tbody>
+                    </table>
+                </div>
             </div>      
         `
         // :label是用label綁定todo，在之後的組件中要取用todo內容時就寫label....
@@ -203,10 +183,24 @@
                 <label for="online" class="sbtn pink_btn">線上<input type="radio" name="payment" id="online" value="線上" v-model='payment'></label>
                 <label for="cash" class="sbtn green_btn">現金<input type="radio" name="payment" id="cash" value="現金" v-model='payment'></label>
             </div>
-            <button type='submit'>送出</button>
+            <button type='submit' class='submitBtn'>送出</button>
             </form>
         `
     });
+
+    Vue.component('kind-label',{
+        template: `
+            <div>
+                <ul>
+                    <li><a href="#">全部</a></li>
+                    <li><a href="#">必要</a></li>
+                    <li><a href="#">想要</a></li>
+                </ul>
+            </div>
+        `
+        
+    })
+
 
     Vue.component('todo-item',{
         // props:['label','todosEdit'],
@@ -219,7 +213,7 @@
             return{
                 isEdit: false,
                 isConfirm: true,
-                isImportant: "gray",
+                isImportant: "light",
             }
         },
         methods:{
@@ -240,7 +234,7 @@
                 this.$emit('edit_a_item', this.todosEdit[0])
             },
             important(){
-                this.isImportant = this.isImportant === 'gray' ? 'black' : 'gray';
+                this.isImportant = this.isImportant === 'light' ? 'deep' : 'light';
             },
         },
         template:`
@@ -250,11 +244,14 @@
             <td><span :class="{active:isEdit}">{{label.spend}}</span><input type="text" v-model="todosEdit[0].spend" :class="{active:isConfirm}" class="inputstyle"></td>
             <td><span :class="{active:isEdit}">{{label.memo}}</span><input type="text" v-model="todosEdit[0].memo" :class="{active:isConfirm}" class="inputstyle"></td>
             <td><span :class="{active:isEdit}">{{label.payment}}</span><input type="text" v-model="todosEdit[0].payment" :class="{active:isConfirm}" class="inputstyle"></td>
-            <td><button @click="edit_b_item" :class="{active:isEdit}">修改</button><button @click="edit_a_item" :class="{active:isConfirm}">確認</button><button @click="del_item">刪除</button></td>
-            <td><span @click="important" class="king_icon" :class="isImportant">ICON</span></td>
+            <td><button @click="edit_b_item" :class="{active:isEdit}" class="editBtn">修改</button><button @click="edit_a_item" :class="{active:isConfirm}" class="confirmBtn">確認</button><button @click="del_item" class="delBtn">刪除</button></td>
+            <td><i class="fa-solid fa-crown king_icon"  @click="important" :class="isImportant"></i></td>
         </tr>
         `
     })
+
+    // <span @click="important" class="king_icon" :class="isImportant">ICON</span>
+
     new Vue({
         el:'#app3',
     })
