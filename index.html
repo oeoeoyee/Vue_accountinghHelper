@@ -22,23 +22,9 @@
     Vue.component('todo-list',{
         data(){
             return{
-                // todos:['a','b','c']
-                todos:[
-                    // {
-                    //     date:'2023-01-11',
-                    //     kind:'kindTest',
-                    //     spend:'spendTest',
-                    //     memo:'memoTest',
-                    //     payment: 'cashORonline'
-                    // },
-                    // {
-                    //     date:'2023-01-05',
-                    //     kind:'kindTest',
-                    //     spend:'spendTest',
-                    //     memo:'memoTest',
-                    //     payment: 'cashORonline'
-                    // }
-                ],
+                // todos是現在所有的項目
+                todos:[],
+                // todosEdit是項目要更動時會用到的
                 // 應在父層就定義，因為之後會改值，指定義在子層的話會改不到
                 todosEdit:[
                     {
@@ -50,17 +36,19 @@
                         index_key:''
                     },
                 ],
+                // todosShow是要顯示的項目(用於切換tab時)(動作的最後都會讓其值 = this.todos)
+                todosShow:[],
             };
         },
         methods:{
             addTodo(submitData){
-                console.log(submitData);
                 console.log(this.todosEdit[0].index_key);
                 this.todos.push(submitData);
                 // console.log(this);
                 // console.log(this.todos);
                 // console.log(this.todos[1]);
                 // console.log(this.todos[1].date);
+                this.todosShow = [...this.todos]
             },
             resetDate(){
                 // 用sort來排列日期(回傳負數的話，前面的數在前面，回傳正整數的話，後面的數在前面)
@@ -68,6 +56,7 @@
                     return b.date < a.date ? 1 : -1
                 })
                 // 如果之後是從資料庫取資料，那要再加一欄是它的index_key，要改的會是indexkey的排序，叫資料時再對indexkey來放資料(?)
+                this.todosShow = [...this.todos]
             },
             itemDel(index_key){
                 // 接收從下面(todo-item)傳過來的要刪除的index_key
@@ -81,6 +70,7 @@
                         }
                     }
                 }else{}
+                this.todosShow = [...this.todos]
             },
             editItem(todosEdit){
                 for(let i=0; i<this.todos.length; i++){
@@ -88,6 +78,7 @@
                         Object.assign(this.todos[i],todosEdit)
                     }
                 }
+                this.todosShow = [...this.todos]
                 this.todosEdit= [
                     {
                         date:'',
@@ -98,6 +89,29 @@
                         index_key:''
                     },
                 ]
+            },
+            changeTab(tabName){
+                this.todosShow = [];
+                if(tabName === 'all'){
+                    // this.todosShow.push(this.todos)
+                    this.todosShow = [...this.todos]
+                }else{
+                    let needArr = ['日常飲食','電信費','交通費'];
+                    let wantArr = ['學習','假日(聚餐、出遊)','治裝水水','其他(喜好)'];
+                    if(tabName === 'need'){
+                        this.todos.forEach(item => {
+                            if(needArr.indexOf(item.kind) !== -1){
+                                this.todosShow.push(item);
+                            }
+                        });
+                    }else if(tabName === 'want'){
+                        this.todos.forEach(item => {
+                            if(wantArr.indexOf(item.kind) !== -1){
+                                this.todosShow.push(item);
+                            }
+                        });
+                    }
+                }
             }
 
         },
@@ -105,7 +119,7 @@
             <div>
                 <todo-input @input='addTodo'></todo-input>
                 <div class="main">
-                    <kind-label></kind-label>
+                    <kind-label @tabName='changeTab'></kind-label>
                     <table>
                         <thead>
                         <tr>
@@ -119,7 +133,7 @@
                         </td>
                         </thead>
                         <tbody>
-                        <todo-item v-for='todo in todos' :label='todo' :todos-edit='todosEdit' @delItem="itemDel" @edit_a_item="editItem"></todo-item>
+                        <todo-item v-for='todo in todosShow' :label='todo' :todos-edit='todosEdit' @delItem="itemDel" @edit_a_item="editItem"></todo-item>
                         </tbody>
                     </table>
                 </div>
@@ -179,9 +193,11 @@
             </select>
             <input type='text' placeholder='150' v-model='spend'/>
             <input type='text' placeholder='輸入備註' v-model='memo'/>
+            <input type="radio" name="payment" id="online" value="線上" v-model='payment'>
+            <input type="radio" name="payment" id="cash" value="現金" v-model='payment'>
             <div class="payment_btn">
-                <label for="online" class="sbtn pink_btn">線上<input type="radio" name="payment" id="online" value="線上" v-model='payment'></label>
-                <label for="cash" class="sbtn green_btn">現金<input type="radio" name="payment" id="cash" value="現金" v-model='payment'></label>
+                <label for="online" class="sbtn pink_btn">線上</label>
+                <label for="cash" class="sbtn green_btn">現金</label>
             </div>
             <button type='submit' class='submitBtn'>送出</button>
             </form>
@@ -189,12 +205,25 @@
     });
 
     Vue.component('kind-label',{
+        props:{
+
+        },
+        data(){
+            return{
+                isChosen: "all",
+            }
+        },
+        methods:{
+            tabName(){
+                this.$emit('tabName', this.isChosen)
+            }
+        },
         template: `
             <div>
                 <ul>
-                    <li><a href="#">全部</a></li>
-                    <li><a href="#">必要</a></li>
-                    <li><a href="#">想要</a></li>
+                    <li :class="{tab:isChosen == 'all'}" @click.prevent="isChosen = 'all'; tabName()"><a href="#">全部</a></li>
+                    <li :class="{tab:isChosen == 'need'}" @click.prevent="isChosen = 'need'; tabName()"><a href="#">必要</a></li>
+                    <li :class="{tab:isChosen == 'want'}" @click.prevent="isChosen = 'want'; tabName()"><a href="#">想要</a></li>
                 </ul>
             </div>
         `

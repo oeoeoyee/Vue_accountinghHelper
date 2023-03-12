@@ -93,10 +93,18 @@
     border: 1px solid black;
     /* border-bottom: none; */
   }
+
+  /* ul > li:nth-last-of-type(2){
+    height: 36px;
+    border-bottom: none;
+  } */
   
   a{
     text-decoration: none;
     color: black;
+    display: block;
+    width: 100%;
+    height: 100%;
   }
 
   .main{
@@ -111,7 +119,7 @@
     margin-right: 12px;
   }
   
-  .payment_btn input{
+  #online, #cash{
     display: none;
   }
   
@@ -132,15 +140,20 @@
     border: 2px solid #FA6868;
   }
 
-  input:checked{
+  #online:checked ~ .payment_btn [for="online"]{
     background-color: #FA6868;
-    color: #6DD677;
+    color: #FFFFFB;
   }
   
   .green_btn{
     color: #6DD677;
     border: 2px solid #6DD677;
   }
+  
+    #cash:checked ~ .payment_btn [for="cash"]{
+      background-color: #6DD677;
+      color: #FFFFFB;
+    }
 
   .submitBtn{
     height: 48px;
@@ -199,6 +212,11 @@
 
   .deep{
     opacity: 0.8;
+  }
+
+  .tab{
+    height: 36px;
+    border-bottom: none;
   }
   
   /* 以上為有被綁定的class */
