@@ -7,35 +7,91 @@
   
   #app3{
     margin: 80px auto;
-    padding: 28px 36px;
+    padding: 30px 36px;
     width: 60%;
     background-color: #FFFFFB;
   }
 
+  @media (max-width: 768px) {
+    #app3{
+      margin: 50px auto;
+      padding: 30px 20px;
+      width: 90%;
+    }
+  }
+
+  @media (max-width: 414px) {
+    #app3{
+      margin: 30px auto;
+      padding: 10px 0px;
+      width: 100%;
+    }
+  }
+
   form{
     display: flex;
+    /* justify-content: space-between; */
+    justify-content: flex-start;
     height: 44px;
   }
   
   form input, form select{
     height: 46px;
+    min-width: 40px;
     font-size: 16px;
     padding: 0 10px;
     margin-right: 12px;
     border: 1px solid black;
   }
 
+  @media (max-width: 768px) {
+    form input, form select{
+      height: 48px;
+      /* min-width: 35px; */
+      font-size: 14px;
+      padding: 0 5px;
+      margin-right: 8px;
+    }
+
+    select{
+      height: 54px;
+    }
+  }
+
+  @media (max-width: 414px) {
+    form{
+      flex-wrap: wrap;
+      justify-content: center;
+      height: auto;
+    }
+
+    form input, form select{
+      height: 40px;
+      width: 90%;
+      padding: 0 3px;
+      margin-right: 0;
+      margin-top: 10px;
+    }
+
+    select{
+      height: 54px;
+    }
+  }
+
   select{
     padding: 0;
     height: 48px;
   }
+
   
   table{
     border-collapse: collapse;
+    width: 100%;
     margin-top: 70px;
     background-color: #FFFFFB;
     border: 1px solid black;
   }
+  
   
   th, td{
     /* width: 150px; */
@@ -55,6 +111,50 @@
     font-size: 16px;
     border: #ccc 1px solid;
   }
+  
+  @media (max-width: 768px) {
+    table{
+      margin-top: 60px;
+    }
+
+    th{
+      font-size: 16px;
+    }
+    
+    td{
+      font-size: 14px;
+    }
+  }
+
+  @media (max-width: 414px) {
+    table{
+      margin-top: 55px;
+      border: none;
+    }
+    
+    th, td{
+      /* width: 150px; */
+      padding: 0;
+      text-align: center;
+      border: 1px solid #ccc;
+      border-left: none;
+      border-right: none;
+    }
+    
+    th{
+      height: 56px;
+      font-size: 16px;
+    }
+    
+    td{
+      height: 48px;
+      font-size: 14px;
+    }
+
+    tr th:nth-of-type(7){
+      line-height: 100%;
+    }
+  }
 
   tr th:nth-of-type(1), tr th:nth-of-type(3),tr th:nth-of-type(6){
     width: 110px;
@@ -70,6 +170,13 @@
 
   tr th:nth-of-type(7){
     line-height: 100%;
+  }
+
+  @media (max-width: 414px) {
+    tr th:nth-of-type(7){
+      width: 40px;
+      font-size: 14px;
+    }
   }
     
   ul{
@@ -93,11 +200,6 @@
     border: 1px solid black;
     /* border-bottom: none; */
   }
-
-  /* ul > li:nth-last-of-type(2){
-    height: 36px;
-    border-bottom: none;
-  } */
   
   a{
     text-decoration: none;
@@ -105,6 +207,30 @@
     display: block;
     width: 100%;
     height: 100%;
+  }
+
+  @media (max-width: 414px) {
+    ul{
+      top: -40px;
+      margin: 0 0 0 0;
+      width: 100%;
+    }
+    
+    li{
+      display: inline-block;
+      width: 33%;
+      height: 40px;
+      font-size: 16px;
+      line-height: 40px;
+      border: #ccc 1px solid;
+      border-left: none;
+      border-right: none;
+      /* border-bottom: none; */
+    }
+
+    li:nth-child(3){
+      width: 34%;
+    }
   }
 
   .main{
@@ -150,15 +276,15 @@
     border: 2px solid #6DD677;
   }
   
-    #cash:checked ~ .payment_btn [for="cash"]{
-      background-color: #6DD677;
-      color: #FFFFFB;
-    }
+  #cash:checked ~ .payment_btn [for="cash"]{
+    background-color: #6DD677;
+    color: #FFFFFB;
+  }
 
   .submitBtn{
     height: 48px;
-    width: 60px;
-    font-size: 20px;
+    min-width: 50px;
+    font-size: 18px;
     font-weight: bold;
     border: none;
     background-color: #F6C555;
@@ -179,6 +305,52 @@
     margin: 3px;
     border: none;
     background-color: #DFDFDF;
+  }
+
+  @media (max-width: 768px) {
+    .editBtn, .confirmBtn, .delBtn{
+      margin: 1px;
+    }
+  }
+
+  @media (max-width: 414px) {
+    .payment_btn{
+      width: 72%;
+      flex-direction: row;
+      justify-content: flex-start;
+      align-items: center;
+      height: 60px;
+      margin-right: 0px;
+    }
+
+    .sbtn{
+      width: 60px;
+      height: 32px;
+      font-size: 16px;
+      line-height: 32px;
+      margin-right: 10px;
+    }
+
+    .submitBtn{
+      width: 20%;
+      height: 40px;
+      margin-top: 10px;
+    }
+
+    .resetBtn{
+      margin: 1px;
+      height: 25px;
+    }
+
+    .editBtn, .confirmBtn{
+      display: none;
+    }
+
+    .delBtn{
+      height: 40px;
+      width: 35px;
+      margin: 1px;
+    }
   }
 
   /* .delBtn{} */
@@ -217,6 +389,14 @@
   .tab{
     height: 36px;
     border-bottom: none;
+  }
+
+  @media (max-width: 414px) {
+    .tab{
+      height: 40px;
+      border-bottom: 1px solid #ccc;
+      background-color: #DFDFDF;
+    }
   }
   
   /* 以上為有被綁定的class */

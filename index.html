@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="index.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css" integrity="sha512-SzlrxWUlpfuzQ+pcUCosxcglQRNAq/DZjVsC0lE40xsADsfeQoEypE+enwcOiGjk/bSuGGKHEyjSoQ1zVisanQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.10/vue.min.js"></script>
-    <title>Document</title>
+    <title>記帳小幫手</title>
 </head>
 <body>
     <div id='app3'>
@@ -42,12 +42,9 @@
         },
         methods:{
             addTodo(submitData){
-                console.log(this.todosEdit[0].index_key);
+                // console.log(this.todosEdit[0].index_key);
+                submitData.date = submitData.date.replaceAll('-', '')
                 this.todos.push(submitData);
-                // console.log(this);
-                // console.log(this.todos);
-                // console.log(this.todos[1]);
-                // console.log(this.todos[1].date);
                 this.todosShow = [...this.todos]
             },
             resetDate(){
@@ -205,9 +202,6 @@
     });
 
     Vue.component('kind-label',{
-        props:{
-
-        },
         data(){
             return{
                 isChosen: "all",
@@ -227,7 +221,6 @@
                 </ul>
             </div>
         `
-        
     })
 
 
