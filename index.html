@@ -114,6 +114,10 @@
         },
         template:`
             <div>
+                <div class="title" style="">
+                    <div>記帳小幫手</div>
+                    <span></span>
+                </div>
                 <todo-input @input='addTodo'></todo-input>
                 <div class="main">
                     <kind-label @tabName='changeTab'></kind-label>
@@ -178,8 +182,8 @@
         },
         template:`
             <form @submit.prevent='submit'>
-            <input type='date' v-model='date'/>
-            <select v-model='kind'>
+            <input type='date' v-model='date' class="date_input" placeholder="日期"/>
+            <select v-model='kind' class="kind_input" placeholder="消費種類">
                 <option value="日常飲食">日常飲食</option>
                 <option value="電信費">電信費</option>
                 <option value="交通費">交通費</option>
